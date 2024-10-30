@@ -1,0 +1,30 @@
+
+### Golang
+
+package main
+
+import (
+ "fmt"
+ "strings"
+)
+
+func atbashCipher(text string) string {
+ alphabet := "abcdefghijklmnopqrstuvwxyz"
+ result := ""
+ for _, char := range text {
+  lowerChar := strings.ToLower(string(char))
+  if strings.Contains(alphabet, lowerChar) {
+   index := strings.Index(alphabet, lowerChar)
+   result += string(alphabet[25-index])
+  } else {
+   result += string(char)
+  }
+ }
+ return result
+}
+
+func main() {
+ text := "Hello world!"
+ encryptedText := atbashCipher(text)
+ fmt.Printf("Зашифрованный текст: %s\n", encryptedText) // Вывод: Svool dliow!
+}

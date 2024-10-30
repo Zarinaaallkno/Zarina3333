@@ -1,0 +1,41 @@
+### Golang
+
+package main
+
+import (
+ "fmt"
+ "math/rand"
+ "strings"
+ "time"
+)
+
+func enigmaCipher(text string, rotors []int) string {
+ alphabet := "abcdefghijklmnopqrstuvwxyz"
+ result := ""
+ for _, char := range text {
+  lowerChar := strings.ToLower(string(char))
+  if strings.Contains(alphabet, lowerChar) {
+   index := strings.Index(alphabet, lowerChar)
+   for _, rotor := range rotors {
+    index = (index + rotor) % len(alphabet)
+   }
+   result += string(alphabet[index])
+  } else {
+   result += string(char)
+  }
+ }
+ return result
+}
+
+func main() {
+ rand.Seed(time.Now().UnixNano()) // Инициализация генератора случайных чисел
+
+ rotors := make([]int, 3)
+ for i := 0; i < 3; i++ {
+  rotors[i] = rand.Intn(26) // Генерация случайных чисел от 0 до 25
+ }
+
+ text := "Hello world!"
+ encryptedText := enigmaCipher(text, rotors)
+ fmt.Printf("Зашифрованный текст: %s\n", encryptedText) // Вывод: Например, 'Qjcmf ykvhf!'
+}

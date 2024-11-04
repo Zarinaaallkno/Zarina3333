@@ -1,0 +1,102 @@
+package main
+
+import (
+ "fmt"
+ "math/rand"
+ "time"
+
+ "gonum.org/v1/gonum/stat/distuv"
+ "gonum.org/v1/gonum/mat"
+ "gonum.org/v1/gonum/plot"
+ "gonum.org/v1/gonum/plot/plotter"
+ "gonum.org/v1/gonum/plot/vg"
+)
+
+type Point struct {
+ X, Y int
+}
+
+type Path struct {
+ Indx []int
+ Leng float64
+ Name string
+}
+
+type TSP struct {
+ points []Point
+ paths   []Path
+}
+
+func generateProblem(count int, canvasSize int) []Point {
+ points := make([]Point, count)
+ for i := 0; i < count; i++ {
+  points[i] = Point{
+   X: rand.Intn(canvasSize),
+   Y: rand.Intn(canvasSize),
+  }
+ }
+ return points
+}
+
+func (tsp *TSP) drawPoints(p *plot.Plot) error {
+ points := make(plotter.XYs, len(tsp.points))
+ for i, pnt := range tsp.points {
+  points[i].X = float64(pnt.X)
+  points[i].Y = float64(pnt.Y)
+ }
+ scatter, err := plotter.NewScatter(points)
+ if err != nil {
+  return err
+ }
+ p.Add(scatter)
+
+ for i, pnt := range tsp.points {
+  p.Text(float64(pnt.X), float64(pnt.Y), fmt.Sprintf("%d", i+1))
+  p.Text(float64(pnt.X), float64(pnt.Y), fmt.Sprintf("(%d; %d)", pnt.X, pnt.Y))
+ }
+ return nil
+}
+
+func (tsp *TSP) drawPaths(p *plot.Plot) error {
+ for _, path := range tsp.paths {
+  line := plotter.NewLine(plotter.XYs{})
+  for _, idx := range path.Indx {
+   line.XYs = append(line.XYs, plotter.XY{X: float64(tsp.points[idx].X), Y: float64(tsp.points[idx].Y)})
+  }
+  p.Add(line)
+ }
+ return nil
+}
+
+func (tsp *TSP) Show() error {
+ p, err := plot.New()
+ if err != nil {
+  return err
+ }
+ p.Title.Text = "Travelling Salesman Problem"
+ p.X.Label.Text = "X"
+ p.Y.Label.Text = "Y"
+
+ if err := tsp.drawPoints(p); err != nil {
+  return err
+ }
+ if err := tsp.drawPaths(p); err != nil {
+  return err
+ }
+
+ if err := p.Save(4*vg.Inch, 4*vg.Inch, "tsp.png"); err != nil {
+  return err
+ }
+ return nil
+}
+
+func main() {
+ rand.Seed(time.Now().UnixNano())
+ points := generateProblem(10, 1000)
+ tsp := TSP{points: points}
+
+ err := tsp.Show()
+ if err != nil {
+  fmt.Println("Error:", err)
+ }
+}

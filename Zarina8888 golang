@@ -1,0 +1,20 @@
+package main
+
+import (
+ "fmt"
+)
+
+func hanoi(n int, source, target, auxiliary string) {
+ if n == 1 {
+  fmt.Printf("Переместите диск 1 с %s на %s\n", source, target)
+  return
+ }
+ hanoi(n-1, source, auxiliary, target)
+ fmt.Printf("Переместите диск %d с %s на %s\n", n, source, target)
+ hanoi(n-1, auxiliary, target, source)
+}
+
+func main() {
+ n := 3 // Количество дисков
+ hanoi(n, "A", "C", "B") // A - источник, C - цель, B - вспомогательный
+}

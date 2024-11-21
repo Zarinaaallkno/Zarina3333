@@ -1,0 +1,24 @@
+package main
+
+import (
+ "fmt"
+ "strconv"
+)
+
+func decimalToBinaryViaOctal(decimalNumber int) string {
+ // Переводим из десятичной в восьмеричную
+ octalNumber := strconv.FormatInt(int64(decimalNumber), 8)
+ fmt.Printf("Восьмеричное представление: %s\n", octalNumber)
+
+ // Переводим из восьмеричной в двоичную
+ octalValue, _ := strconv.ParseInt(octalNumber, 8, 64)
+ binaryNumber := strconv.FormatInt(octalValue, 2)
+
+ return binaryNumber
+}
+
+func main() {
+ decimalNumber := 100
+ binaryResult := decimalToBinaryViaOctal(decimalNumber)
+ fmt.Printf("Двоичное представление: %s\n", binaryResult)
+}
